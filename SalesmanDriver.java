@@ -22,7 +22,6 @@ public class SalesmanDriver
 			population.add(copy);
 			x++;
 		}
-		//System.out.println("added " + x + " to the pop");
 		return population;
 	}
 	
@@ -30,7 +29,6 @@ public class SalesmanDriver
 	{
 		int x = 0;
 		int t = 0;
-		//System.out.println("pop size: " + population.size());
 		for(ArrayList<Integer> temp_chromo: population)
 		{
 			int total = 0;
@@ -45,8 +43,6 @@ public class SalesmanDriver
 					{
 						int temp_distance = test_city.getDistanceTo(temp_chromo.get(j+1));
 						total = temp_distance + total;
-						//System.out.println("distance from " + temp_chromo.get(j) + " and " + temp_chromo.get(j+1) + " is " + temp_distance + " line " + y);
-						//System.out.println("Running total " + total);
 						y++;
 					}
 				}
@@ -54,10 +50,7 @@ public class SalesmanDriver
 			SortedChromo new_sort = new SortedChromo(x, total);
 			sorted_chromo.add(new_sort);
 			x++;
-			//System.out.println("The Total Distance is " + total);
-			//System.out.println("chromo " + t);
 			t++;
-			//System.out.println("\n");
 		}
 		
 		//sorts the chromos in the population by 
@@ -80,13 +73,6 @@ public class SalesmanDriver
 		{
 			crossover_chromo_one_copy.remove(crossover_point);
 		}
-	
-		//System.out.println("chromo " + chromo + " cut at the crossover point");
-		//for(int test: crossover_chromo_one_copy)
-		//{
-			//System.out.println(test);
-		//}
-		//System.out.println("\n");
 		
 		return crossover_chromo_one_copy;
 	}
@@ -169,7 +155,6 @@ public class SalesmanDriver
 				}
 				if(num_appears == 2)
 				{
-					//System.out.println(test + " appears twice " + missing_genes.get(0) + " will replace");
 					comb_crossover_chromo.set(comb_crossover_chromo.indexOf(test),missing_genes.remove(0));
 					num_appears = 0;
 				}
@@ -230,11 +215,9 @@ public class SalesmanDriver
 			}
 			
 		}
-		//System.out.println("\n");
 		//store desired starting and ending city
 		City dest_city = cities.get(0);
 		
-		//System.out.println("Generation " + 1);
 		
 		
 		//Set up chromo (which holds ints which symbolize the gene of the cities) and population 
@@ -262,13 +245,6 @@ public class SalesmanDriver
 		sorted_chromo = sortPop(sorted_chromo, population, cities);
 		
 		
-		//System.out.println("Sorted chromos");
-		//for(SortedChromo test: sorted_chromo)
-		//{
-			//System.out.println(test.getDistance() + " " + test.getChromoNum());
-		//}
-		//System.out.println("\n");
-		
 		//Take best 10 from sorted_chromo
 		ArrayList<SortedChromo> best_chromo = new ArrayList<SortedChromo>();
 		
@@ -277,20 +253,10 @@ public class SalesmanDriver
 			best_chromo.add(sorted_chromo.remove(sorted_chromo.size()-1));
 		}
 		
-		//System.out.println("Best chromos");
-		//for(SortedChromo test: best_chromo)
-		//{
-			//System.out.println(test.getDistance() + " " + test.getChromoNum());
-		//}
-		//System.out.println("\n");
 		
 		//Shuffle remaining sorted_chromo and take 10
 		//System.out.println("Shuffled remaining chromos");
 		Collections.shuffle(sorted_chromo);
-		//for(SortedChromo test: sorted_chromo)
-		//{
-			//System.out.println(test.getDistance() + " " + test.getChromoNum());
-		//}
 		
 		ArrayList<SortedChromo> ran_ten_chromo = new ArrayList<SortedChromo>();
 		
@@ -298,14 +264,6 @@ public class SalesmanDriver
 		{
 			ran_ten_chromo.add(sorted_chromo.remove(sorted_chromo.size()-1));
 		}
-		//System.out.println("\n");
-		
-		//System.out.println("Random ten from shuffled chromos");
-		//for(SortedChromo test: ran_ten_chromo)
-		//{
-			//System.out.println(test.getDistance() + " " + test.getChromoNum());
-		//}
-		//System.out.println("\n");
 		
 		//Sort those 10
 		Collections.sort(ran_ten_chromo, new Comparator<SortedChromo>()
@@ -317,12 +275,6 @@ public class SalesmanDriver
 			}
 		});
 		
-		//System.out.println("Sorted Random ten");
-		//for(SortedChromo test: ran_ten_chromo)
-		//{
-			//System.out.println(test.getDistance() + " " + test.getChromoNum());
-		//}
-		//System.out.println("\n");
 		
 		//Select best four from ran_ten_chromo
 		ArrayList<SortedChromo> final_four_chromo = new ArrayList<SortedChromo>();
@@ -331,12 +283,6 @@ public class SalesmanDriver
 			final_four_chromo.add(ran_ten_chromo.remove(ran_ten_chromo.size()-1));
 		}
 		
-		//System.out.println("Best four from the sorted ten");
-		//for(SortedChromo test: final_four_chromo)
-		//{
-			//System.out.println(test.getDistance() + " " + test.getChromoNum());
-		//}
-		//System.out.println("\n");
 		
 		//Shuffle final four and take two
 		Collections.shuffle(final_four_chromo);
@@ -346,39 +292,15 @@ public class SalesmanDriver
 			final_two_chromo.add(final_four_chromo.remove(final_four_chromo.size()-1));
 		}
 		
-		//System.out.println("Take two from the four");
-		
-		//for(SortedChromo test: final_two_chromo)
-		//{
-			//System.out.println(test.getDistance() + " " + test.getChromoNum());
-		//}
-		
-		//System.out.println("\n");
 		
 		//Crossover
 		Random r = new Random();
 		int crossover_point = r.nextInt((((chromo.size()+ 2) - 3)- 2) + 1) + 2;
-		//System.out.println("crossover point");
-		//System.out.println(crossover_point);
-		//System.out.println("\n");
 		
 		ArrayList<Integer> crossover_chromo_one = population.get(final_two_chromo.get(0).getChromoNum());
 		ArrayList<Integer> crossover_chromo_two = population.get(final_two_chromo.get(1).getChromoNum());
 		ArrayList<Integer> crossover_chromo_one_copy = new ArrayList<Integer>(crossover_chromo_one);
 		ArrayList<Integer> crossover_chromo_two_copy = new ArrayList<Integer>(crossover_chromo_two);
-		//System.out.println("chromo one");
-		//for(int test: crossover_chromo_one)
-		//{
-			//System.out.println(test);
-		//}
-		//System.out.println("\n");
-		
-		//System.out.println("chromo two");
-		//for(int test: crossover_chromo_two)
-		//{
-			//System.out.println(test);
-		//}
-		//System.out.println("\n");
 		
 		//cut chromo one at point
 		int cco_size = crossover_chromo_one_copy.size();
@@ -394,13 +316,6 @@ public class SalesmanDriver
 		//crossover replace dups with missing genes one one
 		comb_crossover_chromo_one = replaceDups(comb_crossover_chromo_one, missing_genes_one);
 		
-		//System.out.println("\n");
-		//System.out.println("completed crossover one");
-		//for(int test: comb_crossover_chromo_one)
-		//{
-			//System.out.println(test);
-		//}
-		//System.out.println("\n");
 
 		//Start of crossover chromo two
 		int cco_size2 = crossover_chromo_two_copy.size();
@@ -415,13 +330,6 @@ public class SalesmanDriver
 		//crossover replace dups with missing genes two
 		comb_crossover_chromo_two = replaceDups(comb_crossover_chromo_two, missing_genes_two);
 		
-		//System.out.println("\n");
-		//System.out.println("completed crossover two");
-		//for(int test: comb_crossover_chromo_two)
-		//{
-			//System.out.println(test);
-		//}
-		//System.out.println("\n");
 		
 		//The chromos that go to the next generation
 		ArrayList<ArrayList<Integer>> next_gen_chromos = new ArrayList<ArrayList<Integer>>();
@@ -431,16 +339,6 @@ public class SalesmanDriver
 		}
 		next_gen_chromos.add(comb_crossover_chromo_one);
 		next_gen_chromos.add(comb_crossover_chromo_two);
-		
-		//System.out.println("Chromos moving on to next gen");
-		//for(ArrayList<Integer> next_gen: next_gen_chromos)
-		//{
-			//for(int next: next_gen)
-			//{
-				//System.out.println(next);
-			//}
-			//System.out.println("\n");
-		//}
 		
 		
 		
@@ -452,11 +350,9 @@ public class SalesmanDriver
 		//start of second generation loop
 		for(int i = 0; i < num_gen; i++)
 		{
-			//System.out.println("Generation " + (i + 2));
 			
 			population.clear();
 			
-			//population = next_gen_chromos;
 			
 			for(ArrayList<Integer> next_gen: next_gen_chromos)
 			{
@@ -468,12 +364,6 @@ public class SalesmanDriver
 			//sort chromo
 			sorted_chromo.clear();
 			sorted_chromo = sortPop(sorted_chromo, population, cities);
-			//System.out.println("Sorted chromos");
-			//for(SortedChromo test: sorted_chromo)
-			//{
-				//System.out.println(test.getDistance() + " " + test.getChromoNum());
-			//}
-			//System.out.println("\n");
 			
 			//Take best 10 from sorted_chromo
 			best_chromo.clear();
@@ -483,12 +373,7 @@ public class SalesmanDriver
 				best_chromo.add(sorted_chromo.remove(sorted_chromo.size()-1));
 			}
 		
-			//System.out.println("Best chromo");
-			//for(SortedChromo test: best_chromo)
-			//{
-				//System.out.println(test.getDistance() + " " + test.getChromoNum());
-			//}
-				System.out.println("\n");
+			System.out.println("\n");
 				
 			if(i == num_gen - 2)
 			{
@@ -504,12 +389,7 @@ public class SalesmanDriver
 			}
 			
 			//Shuffle remaining sorted_chromo and take 10
-			//System.out.println("Shuffled remaining chromos");
 			Collections.shuffle(sorted_chromo);
-			//for(SortedChromo test: sorted_chromo)
-			//{
-				//System.out.println(test.getDistance() + " " + test.getChromoNum());
-			//}
 		
 			ran_ten_chromo.clear();
 		
@@ -517,14 +397,6 @@ public class SalesmanDriver
 			{
 				ran_ten_chromo.add(sorted_chromo.remove(sorted_chromo.size()-1));
 			}
-			//System.out.println("\n");
-		
-			//System.out.println("Random ten from shuffled chromos");
-			//for(SortedChromo test: ran_ten_chromo)
-			//{
-				//System.out.println(test.getDistance() + " " + test.getChromoNum());
-			//}
-			//System.out.println("\n");
 			
 			//Sort those 10
 			Collections.sort(ran_ten_chromo, new Comparator<SortedChromo>()
@@ -536,12 +408,6 @@ public class SalesmanDriver
 				}
 			});
 		
-			//System.out.println("Sorted Random ten");
-			//for(SortedChromo test: ran_ten_chromo)
-			//{
-				//System.out.println(test.getDistance() + " " + test.getChromoNum());
-			//}
-			//System.out.println("\n");
 			
 			//Select best four from ran_ten_chromo
 			final_four_chromo.clear();
@@ -550,12 +416,6 @@ public class SalesmanDriver
 				final_four_chromo.add(ran_ten_chromo.remove(ran_ten_chromo.size()-1));
 			}
 		
-			//System.out.println("Best four from the sorted ten");
-			//for(SortedChromo test: final_four_chromo)
-			//{
-				//System.out.println(test.getDistance() + " " + test.getChromoNum());
-			//}
-			//System.out.println("\n");
 			
 			//Shuffle final four and take two
 			Collections.shuffle(final_four_chromo);
@@ -565,21 +425,9 @@ public class SalesmanDriver
 				final_two_chromo.add(final_four_chromo.remove(final_four_chromo.size()-1));
 			}
 		
-			//System.out.println("Take two from the four");
-		
-			//for(SortedChromo test: final_two_chromo)
-			//{
-				//System.out.println(test.getDistance() + " " + test.getChromoNum());
-			//}
-		
-			//System.out.println("\n");
-			
 			
 			//Crossover
 			crossover_point = r.nextInt((((chromo.size()+ 2) - 3)- 2) + 1) + 2;
-			//System.out.println("crossover point");
-			//System.out.println(crossover_point);
-			//System.out.println("\n");
 			
 			crossover_chromo_one = population.get(final_two_chromo.get(0).getChromoNum());
 			crossover_chromo_two = population.get(final_two_chromo.get(1).getChromoNum());
@@ -587,19 +435,6 @@ public class SalesmanDriver
 			crossover_chromo_two_copy = crossover_chromo_two;
 			ArrayList<Integer> crossover_chromo_one_true = new ArrayList<Integer>(crossover_chromo_one); // refs were getting tangled
 			
-			//System.out.println("chromo one");
-			//for(int test: crossover_chromo_one)
-			//{
-				//System.out.println(test);
-			//}
-			//System.out.println("\n");
-		
-			//System.out.println("chromo two");
-			//for(int test: crossover_chromo_two)
-			//{
-				//System.out.println(test);
-			//}
-			//System.out.println("\n");
 			
 			
 			//Crossover one
@@ -608,20 +443,12 @@ public class SalesmanDriver
 			crossover_chromo_one_copy = cutChromo(crossover_chromo_one_copy, crossover_point, 1, cco_size); //crossover_chromo_one_copy
 			
 			//combine first crossover chromo
-			//System.out.println("\n");
 			comb_crossover_chromo_one = combChromo(crossover_chromo_one_copy, crossover_chromo_one, crossover_chromo_two, true, cco_size, crossover_point);
 			//Find missing genes of first crossover chromo
 			missing_genes_one.clear();
 			missing_genes_one = missingChromo(missing_genes_one, comb_crossover_chromo_one, 1);
 			//replace dups with missing
 			comb_crossover_chromo_one = replaceDups(comb_crossover_chromo_one, missing_genes_one);
-			//System.out.println("\n");
-			//System.out.println("completed crossover one");
-			//for(int test: comb_crossover_chromo_one)
-			//{
-				//System.out.println(test);
-			//}
-				//System.out.println("\n");
 			
 			//Crossover one two
 			crossover_chromo_two_copy = cutChromo(crossover_chromo_two_copy, crossover_point, 2, cco_size);
@@ -629,14 +456,7 @@ public class SalesmanDriver
 			missing_genes_two.clear();
 			missing_genes_two = missingChromo(missing_genes_two, comb_crossover_chromo_two, 2);
 			comb_crossover_chromo_two = replaceDups(comb_crossover_chromo_two, missing_genes_two);
-			//System.out.println("\n");
-			//System.out.println("completed crossover two");
-			//for(int test: comb_crossover_chromo_two)
-			//{
-				//System.out.println(test);
-			//}
-				//System.out.println("\n");
-				
+
 			//The chromos that go to the next generation	
 			next_gen_chromos.clear();
 			for(SortedChromo test : best_chromo)
@@ -648,17 +468,6 @@ public class SalesmanDriver
 			next_gen_chromos.add(comb_crossover_chromo_one);
 			next_gen_chromos.add(comb_crossover_chromo_two);
 			
-			//System.out.println("Chromos moving on to next gen");
-			//for(ArrayList<Integer> next_gen: next_gen_chromos)
-			//{
-				//for(int next: next_gen)
-				//{
-					//System.out.println(next);
-				//}
-				//System.out.println("\n");
-			
-				
-			//}
 	
 		}
 	}
