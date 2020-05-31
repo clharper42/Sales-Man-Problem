@@ -148,6 +148,11 @@ public class SalesmanDriver
 			System.out.println("20 is the minimum number in the population");
 			System.exit(0);
 		}
+		else if(num_gen < 2)
+		{
+			System.out.println("2 is the minimum number of generations");
+			System.exit(0);
+		}
 		String line;
 		
 		ArrayList<City> cities = new ArrayList<City>();
@@ -227,7 +232,7 @@ public class SalesmanDriver
 		
 		//Shuffle remaining sorted_chromo and take 10
 		Collections.shuffle(sorted_chromo);
-		
+
 		ArrayList<SortedChromo> ran_ten_chromo = new ArrayList<SortedChromo>();
 		for (int i = 1; i <= 10; i++)
 		{
