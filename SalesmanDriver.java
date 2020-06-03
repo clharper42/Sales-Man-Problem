@@ -28,6 +28,7 @@ public class SalesmanDriver
 		String line;
 		
 		ArrayList<City> cities = new ArrayList<City>();
+		ArrayList<String> city_names = new ArrayList<String>();
 		
 		//create list of cities and their genes(index)
 		BufferedReader cities_lines = new BufferedReader(new FileReader(path_cities));
@@ -36,42 +37,36 @@ public class SalesmanDriver
 		{
 			City temp_city = new City(line, temp_gene);
 			cities.add(temp_city);
+			city_names.add(line);
 			temp_gene++;
 		}
 		cities_lines.close();
 		
-		//allow each city to know what cities they connect to and distance and gene of each of those cities
+		//Give each city the abilty to know where each city lies in the orginal array and initialize each citites citydistanceto array
+		City.numofcities = city_names.size();
+		City.citygenes = city_names;
+		for(City temp : cities)
+		{
+			temp.SetCityDistanceToArrayListSize();
+		}
+
+
+
+		//allow each city to know what cities they connect to and distance and gene of each of those citie
 		Scanner sc = new Scanner(new File(path_distance));
+		City cityfrom;
+		City cityto;
 		while(sc.hasNext())
 		{
-			String comp_city = sc.next();
-			
-			for(City city_en : cities)
-			{
-				if(city_en.getName().equals(comp_city))
-				{
-					String city_to = sc.next();
-					int distance_to = sc.nextInt();
-					int gene_to = 0;
-					//gets gene for connecting city so each city knows what it connects to, distance to said city, and what gene that city is
-					for(City city_dis : cities)
-					{
-						if(city_dis.getName().equals(city_to))
-						{
-							gene_to = city_dis.getGene();
-						}
-					}
-					System.out.println(city_en.getName() + " Matches " + comp_city + " so add " + city_to + " which has a gene of " + gene_to + " and distance between of " + distance_to);
-					city_en.addCityDistanceTo(city_to, distance_to, gene_to);
-				}
-			}
-			
+			String city_start = sc.next();
+			String city_end = sc.next();
+			int distance = sc.nextInt();
+			cityfrom = cities.get(city_names.indexOf(city_start));
+			cityto = cities.get(city_names.indexOf(city_end));
+			System.out.println(city_start + " to " + city_end + " is a distance of " + distance);
+			cityfrom.addCityDistanceTo(city_end, distance, cityto.getGene());
 		}
-		//store desired starting and ending city
-		//City dest_city = cities.get(0);
-		
-		
-		
+
 		//Set up chromo (which holds ints which symbolize the gene of the cities) and population 
 		ArrayList<Integer> chromo = new ArrayList<Integer>();
 		ArrayList<ArrayList<Integer>> population = new ArrayList<ArrayList<Integer>>();
@@ -221,7 +216,8 @@ public class SalesmanDriver
 				ArrayList<Integer> final_route = population.get(final_chromo.getChromoNum());
 				for(int route: final_route)
 				{
-					System.out.println(route);
+					//System.out.println(route);
+					System.out.println(city_names.get(route) + " " + route);
 				}
 				System.out.println("with a distance of " + final_chromo.getDistance());
 				break;
