@@ -9,134 +9,6 @@ import java.util.Comparator;
 
 public class SalesmanDriver
 {
-	
-	public static void addToPop(int num_pop, ArrayList<Integer> chromo, ArrayList<ArrayList<Integer>> population)
-	{
-		for(int i = 0; i < num_pop-2; i++)//12
-		{
-			ArrayList<Integer> copy = new ArrayList<Integer>(chromo);
-			Collections.shuffle(copy);
-			copy.add(0,0);
-			copy.add(0);
-			population.add(copy);
-		}
-	}
-	
-	public static void sortPop(ArrayList<SortedChromo> sorted_chromo, ArrayList<ArrayList<Integer>> population, ArrayList<City> cities)
-	{
-			int x = 0;
-			int total = 0;
-			for(ArrayList<Integer> temp_chromo: population)
-			{
-				total = 0;
-				for (int j = 0; j < temp_chromo.size()-1; j++)
-				{
-					City temp_city = cities.get(temp_chromo.get(j));
-					total = total + temp_city.getDistanceTo(temp_chromo.get(j+1));
-				}
-				SortedChromo new_sort = new SortedChromo(x, total);
-				sorted_chromo.add(new_sort);
-				x++;
-			}
-
-		
-		//sorts the chromos in the population by 
-		Collections.sort(sorted_chromo, new Comparator<SortedChromo>()
-		{
-			// descending sort
-			public int compare(SortedChromo sc1, SortedChromo sc2)
-			{
-				return Integer.valueOf(sc2.getDistance()).compareTo(sc1.getDistance());
-			}
-		});
-	}
-	
-	public static void cutChromo(ArrayList<Integer> crossover_chromo_one_copy, int crossover_point, int chromo, int cco_size)
-	{
-		//add +1 to crossover_point to make count start at zero over 1
-		for(int i = crossover_point; i < cco_size; i++)
-		{
-			crossover_chromo_one_copy.remove(crossover_point);
-		}
-		
-	}
-	
-	public static void combChromo(ArrayList<Integer> crossover_chromo_copy, ArrayList<Integer> crossover_chromo_from, int cco_size, int crossover_point)
-	{
-		
-		for(int i = crossover_point; i < cco_size; i++)
-		{
-			crossover_chromo_copy.add(crossover_chromo_from.get(i));
-		}
-
-	}
-	
-	public static void missingChromo(ArrayList<Integer> missing_genes, ArrayList<Integer> comb_crossover_chromo, int chromo)
-	{
-		//could have done comb_crossover_chromo.indexOf() == -1
-		/*for(int i = 1; i <= comb_crossover_chromo.size()-2; i++)
-		{
-			boolean appears = false;
-			for(int test: comb_crossover_chromo)
-			{
-				if( i == test)
-				{
-					appears = true;
-				}
-				
-			}
-			if(appears == false)
-			{
-				missing_genes.add(i);
-			}
-		}
-		
-		return missing_genes;*/
-
-		for(int i = 1; i <= comb_crossover_chromo.size()-2; i++)
-		{
-			if(comb_crossover_chromo.indexOf(i) == - 1)
-			{
-				missing_genes.add(i);
-			}
-		}
-	}
-	
-	public static void replaceDups(ArrayList<Integer> comb_crossover_chromo, ArrayList<Integer> missing_genes)
-	{
-		//could have done comb_crossover_chromo.indexOf() != comb_crossover_chromo.lastIndexOf() to replace
-		/*for(int i = 1; i <= comb_crossover_chromo.size()-2; i++)
-		{
-			int num_appears = 0;
-			for(int test: comb_crossover_chromo)
-			{
-				//System.out.println("int test " + in_test);
-				if(i == test)
-				{
-				//	System.out.println(i + " equals " + test);
-					num_appears++;
-				}
-				if(num_appears == 2)
-				{
-					comb_crossover_chromo.set(comb_crossover_chromo.indexOf(test),missing_genes.remove(0));
-					num_appears = 0;
-				}
-				
-			}
-		}
-		
-		return comb_crossover_chromo;*/
-
-		for(int i = 1; i <= comb_crossover_chromo.size()-2; i++)
-		{
-			if(comb_crossover_chromo.indexOf(i) != comb_crossover_chromo.lastIndexOf(i))
-			{
-				comb_crossover_chromo.set(comb_crossover_chromo.indexOf(i),missing_genes.remove(0));
-			}
-		}
-
-	}
-	
 	public static void main(String[] args) throws IOException
 	{
 		String path_cities = args[0];
@@ -221,7 +93,7 @@ public class SalesmanDriver
 		//sorted_chromo is used to get best distance of the chromos
 		ArrayList<SortedChromo> sorted_chromo = new ArrayList<SortedChromo>();
 		
-		sortPop(sorted_chromo, population, cities);
+		SalesmanFunct.sortPop(sorted_chromo, population, cities);
 		//Take best 10 from sorted_chromo
 		ArrayList<SortedChromo> best_chromo = new ArrayList<SortedChromo>();
 		for (int i = 1; i <= 10; i++)
@@ -277,32 +149,32 @@ public class SalesmanDriver
 		
 		//cut chromo one at point
 		int cco_size = crossover_chromo_one_copy.size();
-		cutChromo(crossover_chromo_one_copy,crossover_point,1,cco_size);
+		SalesmanFunct.cutChromo(crossover_chromo_one_copy,crossover_point,1,cco_size);
 
 		//combine chromo one with chromo two at point
-		combChromo(crossover_chromo_one_copy, crossover_chromo_two, cco_size, crossover_point);
+		SalesmanFunct.combChromo(crossover_chromo_one_copy, crossover_chromo_two, cco_size, crossover_point);
 
 		//crossover finding missing genes of one
 		ArrayList<Integer> missing_genes_one = new ArrayList<Integer>();
-		missingChromo(missing_genes_one, crossover_chromo_one_copy, 1);
+		SalesmanFunct.missingChromo(missing_genes_one, crossover_chromo_one_copy, 1);
 
 
 		//crossover replace dups with missing genes one
-		replaceDups(crossover_chromo_one_copy, missing_genes_one);
+		SalesmanFunct.replaceDups(crossover_chromo_one_copy, missing_genes_one);
 		
 
 		//Start of crossover chromo two
 		int cco_size2 = crossover_chromo_two_copy.size();
-		cutChromo(crossover_chromo_two_copy,crossover_point,2,cco_size2);
-		combChromo(crossover_chromo_two_copy, crossover_chromo_one, cco_size2, crossover_point);
+		SalesmanFunct.cutChromo(crossover_chromo_two_copy,crossover_point,2,cco_size2);
+		SalesmanFunct.combChromo(crossover_chromo_two_copy, crossover_chromo_one, cco_size2, crossover_point);
 
 
 		//crossover finding missing genes of two
 		ArrayList<Integer> missing_genes_two = new ArrayList<Integer>();
-		missingChromo(missing_genes_two, crossover_chromo_two_copy, 2);
+		SalesmanFunct.missingChromo(missing_genes_two, crossover_chromo_two_copy, 2);
 		
 		//crossover replace dups with missing genes two
-		replaceDups(crossover_chromo_two_copy, missing_genes_two);
+		SalesmanFunct.replaceDups(crossover_chromo_two_copy, missing_genes_two);
 		
 		//The chromos that go to the next generation
 		ArrayList<ArrayList<Integer>> next_gen_chromos = new ArrayList<ArrayList<Integer>>();
@@ -325,11 +197,11 @@ public class SalesmanDriver
 				population.add(next_gen);
 			}
 			//randomize chromo and add them to the population
-			addToPop(num_pop, chromo, population);
+			SalesmanFunct.addToPop(num_pop, chromo, population);
 			
 			//sort chromo
 			sorted_chromo.clear();
-			sortPop(sorted_chromo, population, cities);
+			SalesmanFunct.sortPop(sorted_chromo, population, cities);
 			
 			//Take best 10 from sorted_chromo
 			best_chromo.clear();
@@ -404,27 +276,27 @@ public class SalesmanDriver
 			//Crossover one
 			//cut chromo one at crossover point
 			cco_size = crossover_chromo_one.size();
-			cutChromo(corossover_chromo_one_copy_loop, crossover_point, 1, cco_size); //crossover_chromo_one_copy
+			SalesmanFunct.cutChromo(corossover_chromo_one_copy_loop, crossover_point, 1, cco_size); //crossover_chromo_one_copy
 			
 			//combine first crossover chromo
-			combChromo(corossover_chromo_one_copy_loop, crossover_chromo_two, cco_size, crossover_point);
+			SalesmanFunct.combChromo(corossover_chromo_one_copy_loop, crossover_chromo_two, cco_size, crossover_point);
 
 			//Find missing genes of first crossover chromo
 			missing_genes_one.clear();
-			missingChromo(missing_genes_one, corossover_chromo_one_copy_loop, 1);
+			SalesmanFunct.missingChromo(missing_genes_one, corossover_chromo_one_copy_loop, 1);
 
 			//replace dups with missing
-			replaceDups(corossover_chromo_one_copy_loop, missing_genes_one);
+			SalesmanFunct.replaceDups(corossover_chromo_one_copy_loop, missing_genes_one);
 			
 			//Crossover one two
-			cutChromo(corossover_chromo_two_copy_loop, crossover_point, 2, cco_size);
+			SalesmanFunct.cutChromo(corossover_chromo_two_copy_loop, crossover_point, 2, cco_size);
 
-			combChromo(corossover_chromo_two_copy_loop, crossover_chromo_two, cco_size, crossover_point);
+			SalesmanFunct.combChromo(corossover_chromo_two_copy_loop, crossover_chromo_two, cco_size, crossover_point);
 
 			missing_genes_two.clear();
-			missingChromo(missing_genes_two, corossover_chromo_two_copy_loop, 2);
+			SalesmanFunct.missingChromo(missing_genes_two, corossover_chromo_two_copy_loop, 2);
 
-			replaceDups(corossover_chromo_two_copy_loop, missing_genes_two);
+			SalesmanFunct.replaceDups(corossover_chromo_two_copy_loop, missing_genes_two);
 
 			//The chromos that go to the next generation	
 			next_gen_chromos.clear();
