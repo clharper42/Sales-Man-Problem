@@ -14,7 +14,7 @@ public class SalesmanFunct
 {
     public static void addToPop(int num_pop, ArrayList<Integer> chromo, ArrayList<ArrayList<Integer>> population)
 	{
-		for(int i = 0; i < num_pop-2; i++)//12
+		for(int i = 0; i < num_pop-12; i++)//12 chromos already in population from last generation
 		{
 			ArrayList<Integer> copy = new ArrayList<Integer>(chromo);
 			Collections.shuffle(copy);
