@@ -2,6 +2,9 @@ package salesman;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
+
+import salesman.City;
+
 import java.util.Random;
 import java.io.*;
 import java.util.Collections;
@@ -21,17 +24,30 @@ public class SalesmanFunct
 		}
     }
     
-    public static void sortPop(ArrayList<SortedChromo> sorted_chromo, ArrayList<ArrayList<Integer>> population, ArrayList<City> cities)
+    public static void sortPop(ArrayList<SortedChromo> sorted_chromo, ArrayList<ArrayList<Integer>> population)
 	{
 			int x = 0;
 			int total = 0;
-			for(ArrayList<Integer> temp_chromo: population)
+			/*for(ArrayList<Integer> temp_chromo: population)
 			{
 				total = 0;
 				for (int j = 0; j < temp_chromo.size()-1; j++)
 				{
 					City temp_city = cities.get(temp_chromo.get(j));
 					total = total + temp_city.getDistanceTo(temp_chromo.get(j+1));
+				}
+				SortedChromo new_sort = new SortedChromo(x, total);
+				sorted_chromo.add(new_sort);
+				x++;
+			}*/
+
+
+			for(ArrayList<Integer> temp_chromo: population)
+			{
+				total = 0;
+				for (int j = 0; j < temp_chromo.size()-1; j++)
+				{
+					total = total + City.distances[temp_chromo.get(j)][temp_chromo.get(j+1)];
 				}
 				SortedChromo new_sort = new SortedChromo(x, total);
 				sorted_chromo.add(new_sort);
@@ -50,7 +66,7 @@ public class SalesmanFunct
 		});
     }
     
-    public static void cutChromo(ArrayList<Integer> crossover_chromo_one_copy, int crossover_point, int chromo, int cco_size)
+    public static void cutChromo(ArrayList<Integer> crossover_chromo_one_copy, int crossover_point, int cco_size)
 	{
 		//add +1 to crossover_point to make count start at zero over 1
 		for(int i = crossover_point; i < cco_size; i++)
@@ -70,7 +86,7 @@ public class SalesmanFunct
 
 	}
 	
-	public static void missingChromo(ArrayList<Integer> missing_genes, ArrayList<Integer> comb_crossover_chromo, int chromo)
+	public static void missingChromo(ArrayList<Integer> missing_genes, ArrayList<Integer> comb_crossover_chromo)
 	{
 		//could have done comb_crossover_chromo.indexOf() == -1
 		/*for(int i = 1; i <= comb_crossover_chromo.size()-2; i++)
