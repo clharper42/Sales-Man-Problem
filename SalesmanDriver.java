@@ -83,11 +83,12 @@ public class SalesmanDriver
 			population.add(copy);
 		}
 		
+		//Fitness
 		//calculate total distance for all  the chromo of the population
-		//sorted_chromo is used to get best distance of the chromos
 		ArrayList<SortedChromo> sorted_chromo = new ArrayList<SortedChromo>();
 		SalesmanFunct.sortPop(sorted_chromo, population);
 
+		//Selection
 		//Take best 10 from sorted_chromo and move them to the next generation
 		ArrayList<SortedChromo> best_chromo = new ArrayList<SortedChromo>();
 		for (int i = 1; i <= 10; i++)
@@ -95,6 +96,7 @@ public class SalesmanDriver
 			best_chromo.add(sorted_chromo.remove(sorted_chromo.size()-1));
 		}
 		
+		/*
 		//Shuffle remaining sorted_chromo and take 10
 		Collections.shuffle(sorted_chromo);
 		ArrayList<SortedChromo> ran_ten_chromo = new ArrayList<SortedChromo>();
@@ -128,7 +130,15 @@ public class SalesmanDriver
 		{
 			final_two_chromo.add(final_four_chromo.remove(final_four_chromo.size()-1));
 		}
-		
+		*/
+		//Take next 2 best for crossover
+		ArrayList<SortedChromo> final_two_chromo = new ArrayList<SortedChromo>();
+		for (int i = 1; i <= 2; i++)
+		{
+			final_two_chromo.add(sorted_chromo.remove(sorted_chromo.size()-1));
+		}
+
+
 		
 		//Crossover
 		Random r = new Random();
@@ -150,7 +160,7 @@ public class SalesmanDriver
 		ArrayList<Integer> missing_genes_one = new ArrayList<Integer>();
 		SalesmanFunct.missingChromo(missing_genes_one, crossover_chromo_one_copy);
 
-
+		//Mutation
 		//crossover replace dups with missing genes one
 		SalesmanFunct.replaceDups(crossover_chromo_one_copy, missing_genes_one);
 		
@@ -165,6 +175,7 @@ public class SalesmanDriver
 		ArrayList<Integer> missing_genes_two = new ArrayList<Integer>();
 		SalesmanFunct.missingChromo(missing_genes_two, crossover_chromo_two_copy);
 		
+		//Mutation
 		//crossover replace dups with missing genes two
 		SalesmanFunct.replaceDups(crossover_chromo_two_copy, missing_genes_two);
 		
@@ -191,10 +202,12 @@ public class SalesmanDriver
 			//randomize chromo and add them to the population
 			SalesmanFunct.addToPop(num_pop, chromo, population);
 			
+			//Fitness
 			//sort chromo
 			sorted_chromo.clear();
 			SalesmanFunct.sortPop(sorted_chromo, population);
 			
+			//Selection
 			//Take best 10 from sorted_chromo
 			best_chromo.clear();
 		
@@ -219,7 +232,7 @@ public class SalesmanDriver
 				System.out.println("with a distance of " + final_chromo.getDistance());
 				break;
 			}
-			
+			/*
 			//Shuffle remaining sorted_chromo and take 10
 			Collections.shuffle(sorted_chromo);
 		
@@ -256,7 +269,13 @@ public class SalesmanDriver
 			{
 				final_two_chromo.add(final_four_chromo.remove(final_four_chromo.size()-1));
 			}
-		
+			*/
+			//Take next two best for crossover
+			final_two_chromo.clear();
+			for (int j = 1; j <= 2; j++)
+			{
+				final_two_chromo.add(sorted_chromo.remove(sorted_chromo.size()-1));
+			}
 			
 			//Crossover
 			crossover_point = r.nextInt((((chromo.size()+ 2) - 3)- 2) + 1) + 2;
@@ -278,6 +297,7 @@ public class SalesmanDriver
 			missing_genes_one.clear();
 			SalesmanFunct.missingChromo(missing_genes_one, corossover_chromo_one_copy_loop);
 
+			//Mutaion
 			//replace dups with missing
 			SalesmanFunct.replaceDups(corossover_chromo_one_copy_loop, missing_genes_one);
 			
@@ -289,6 +309,7 @@ public class SalesmanDriver
 			missing_genes_two.clear();
 			SalesmanFunct.missingChromo(missing_genes_two, corossover_chromo_two_copy_loop);
 
+			//Mutation
 			SalesmanFunct.replaceDups(corossover_chromo_two_copy_loop, missing_genes_two);
 
 			//The chromos that go to the next generation	
