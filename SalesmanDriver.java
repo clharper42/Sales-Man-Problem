@@ -45,12 +45,7 @@ public class SalesmanDriver
 		//Give each city the abilty to know where each city lies in the orginal array and initialize each citites citydistanceto array
 		City.numofcities = city_names.size();
 		City.citygenes = city_names;
-		for(City temp : cities)
-		{
-			temp.SetCityDistanceToArrayListSize();
-		}
-
-
+		City.distances = new int[cities.size()][cities.size()];
 
 		//allow each city to know what cities they connect to and distance and gene of each of those citie
 		Scanner sc = new Scanner(new File(path_distance));
