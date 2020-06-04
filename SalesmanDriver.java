@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Random;
+import java.util.Arrays;
 import java.io.*;
 import java.util.Collections;
 import java.util.Comparator;
@@ -11,6 +12,14 @@ public class SalesmanDriver
 {
 	public static void main(String[] args) throws IOException
 	{
+		/*
+			Information - 
+				Chromo is a ind. path
+				Gene is the index of the city in the orginal array/file
+				Population is a group of chromos
+				Generation is how many times the process repeats
+		*/
+
 		String path_cities = args[0];
 		String path_distance = args[1];
 		int num_gen = Integer.parseInt(args[2]);
@@ -27,27 +36,22 @@ public class SalesmanDriver
 		}
 		String line;
 		
-		ArrayList<City> cities = new ArrayList<City>();
 		ArrayList<String> city_names = new ArrayList<String>();
 		
 		//create list of cities and their genes(index)
 		BufferedReader cities_lines = new BufferedReader(new FileReader(path_cities));
-		int temp_gene = 0;
 		while((line = cities_lines.readLine()) != null)
 		{
-			City temp_city = new City(line, temp_gene);
-			cities.add(temp_city);
 			city_names.add(line);
-			temp_gene++;
 		}
 		cities_lines.close();
 		
-		//Give each city the abilty to know where each city lies in the orginal array and initialize each citites citydistanceto array
+		//Set up the distance matrix in the city class
 		City.numofcities = city_names.size();
 		City.citygenes = city_names;
-		City.distances = new int[cities.size()][cities.size()];
+		City.distances = new int[city_names.size()][city_names.size()];
 
-		//allow each city to know what cities they connect to and distance and gene of each of those citie
+		//Fill in the city distance matrix
 		Scanner sc = new Scanner(new File(path_distance));
 		City cityfrom;
 		City cityto;
@@ -56,16 +60,16 @@ public class SalesmanDriver
 			String city_start = sc.next();
 			String city_end = sc.next();
 			int distance = sc.nextInt();
-			cityfrom = cities.get(city_names.indexOf(city_start));
-			cityto = cities.get(city_names.indexOf(city_end));
 			System.out.println(city_start + " to " + city_end + " is a distance of " + distance);
-			cityfrom.addCityDistanceTo(city_end, distance, cityto.getGene());
+
+			City.distances[city_names.indexOf(city_start)][city_names.indexOf(city_end)] = distance;
 		}
+
 
 		//Set up chromo (which holds ints which symbolize the gene of the cities) and population 
 		ArrayList<Integer> chromo = new ArrayList<Integer>();
 		ArrayList<ArrayList<Integer>> population = new ArrayList<ArrayList<Integer>>();
-		for(int i = 1; i < cities.size(); i++)
+		for(int i = 1; i < city_names.size(); i++)
 		{
 			chromo.add(i);
 		}
@@ -82,8 +86,8 @@ public class SalesmanDriver
 		//calculate total distance for all  the chromo of the population
 		//sorted_chromo is used to get best distance of the chromos
 		ArrayList<SortedChromo> sorted_chromo = new ArrayList<SortedChromo>();
-		
-		SalesmanFunct.sortPop(sorted_chromo, population, cities);
+		SalesmanFunct.sortPop(sorted_chromo, population);
+
 		//Take best 10 from sorted_chromo
 		ArrayList<SortedChromo> best_chromo = new ArrayList<SortedChromo>();
 		for (int i = 1; i <= 10; i++)
@@ -91,10 +95,8 @@ public class SalesmanDriver
 			best_chromo.add(sorted_chromo.remove(sorted_chromo.size()-1));
 		}
 		
-		
 		//Shuffle remaining sorted_chromo and take 10
 		Collections.shuffle(sorted_chromo);
-
 		ArrayList<SortedChromo> ran_ten_chromo = new ArrayList<SortedChromo>();
 		for (int i = 1; i <= 10; i++)
 		{
@@ -139,14 +141,14 @@ public class SalesmanDriver
 		
 		//cut chromo one at point
 		int cco_size = crossover_chromo_one_copy.size();
-		SalesmanFunct.cutChromo(crossover_chromo_one_copy,crossover_point,1,cco_size);
+		SalesmanFunct.cutChromo(crossover_chromo_one_copy,crossover_point,cco_size);
 
 		//combine chromo one with chromo two at point
 		SalesmanFunct.combChromo(crossover_chromo_one_copy, crossover_chromo_two, cco_size, crossover_point);
 
 		//crossover finding missing genes of one
 		ArrayList<Integer> missing_genes_one = new ArrayList<Integer>();
-		SalesmanFunct.missingChromo(missing_genes_one, crossover_chromo_one_copy, 1);
+		SalesmanFunct.missingChromo(missing_genes_one, crossover_chromo_one_copy);
 
 
 		//crossover replace dups with missing genes one
@@ -155,13 +157,13 @@ public class SalesmanDriver
 
 		//Start of crossover chromo two
 		int cco_size2 = crossover_chromo_two_copy.size();
-		SalesmanFunct.cutChromo(crossover_chromo_two_copy,crossover_point,2,cco_size2);
+		SalesmanFunct.cutChromo(crossover_chromo_two_copy,crossover_point,cco_size2);
 		SalesmanFunct.combChromo(crossover_chromo_two_copy, crossover_chromo_one, cco_size2, crossover_point);
 
 
 		//crossover finding missing genes of two
 		ArrayList<Integer> missing_genes_two = new ArrayList<Integer>();
-		SalesmanFunct.missingChromo(missing_genes_two, crossover_chromo_two_copy, 2);
+		SalesmanFunct.missingChromo(missing_genes_two, crossover_chromo_two_copy);
 		
 		//crossover replace dups with missing genes two
 		SalesmanFunct.replaceDups(crossover_chromo_two_copy, missing_genes_two);
@@ -191,7 +193,7 @@ public class SalesmanDriver
 			
 			//sort chromo
 			sorted_chromo.clear();
-			SalesmanFunct.sortPop(sorted_chromo, population, cities);
+			SalesmanFunct.sortPop(sorted_chromo, population);
 			
 			//Take best 10 from sorted_chromo
 			best_chromo.clear();
@@ -267,25 +269,25 @@ public class SalesmanDriver
 			//Crossover one
 			//cut chromo one at crossover point
 			cco_size = crossover_chromo_one.size();
-			SalesmanFunct.cutChromo(corossover_chromo_one_copy_loop, crossover_point, 1, cco_size); //crossover_chromo_one_copy
+			SalesmanFunct.cutChromo(corossover_chromo_one_copy_loop, crossover_point, cco_size); //crossover_chromo_one_copy
 			
 			//combine first crossover chromo
 			SalesmanFunct.combChromo(corossover_chromo_one_copy_loop, crossover_chromo_two, cco_size, crossover_point);
 
 			//Find missing genes of first crossover chromo
 			missing_genes_one.clear();
-			SalesmanFunct.missingChromo(missing_genes_one, corossover_chromo_one_copy_loop, 1);
+			SalesmanFunct.missingChromo(missing_genes_one, corossover_chromo_one_copy_loop);
 
 			//replace dups with missing
 			SalesmanFunct.replaceDups(corossover_chromo_one_copy_loop, missing_genes_one);
 			
 			//Crossover one two
-			SalesmanFunct.cutChromo(corossover_chromo_two_copy_loop, crossover_point, 2, cco_size);
+			SalesmanFunct.cutChromo(corossover_chromo_two_copy_loop, crossover_point, cco_size);
 
 			SalesmanFunct.combChromo(corossover_chromo_two_copy_loop, crossover_chromo_two, cco_size, crossover_point);
 
 			missing_genes_two.clear();
-			SalesmanFunct.missingChromo(missing_genes_two, corossover_chromo_two_copy_loop, 2);
+			SalesmanFunct.missingChromo(missing_genes_two, corossover_chromo_two_copy_loop);
 
 			SalesmanFunct.replaceDups(corossover_chromo_two_copy_loop, missing_genes_two);
 
