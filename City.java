@@ -7,23 +7,14 @@ public class City
 
 	private int gene;
 	private String name;
-	private ArrayList<CityDistanceTo> cities;
 	public static int numofcities;
 	public static ArrayList<String> citygenes;
-	
+	public static int[][] distances; // a matrix where the indexes refer to the cities postion in the orginal array and it stores the distance. EX: [4][3] contains the distance between city 3 and 4
+
 	public City(String name, int gene)
 	{
 		this.name = name;
 		this.gene = gene; //index in initial array
-		cities = new ArrayList<CityDistanceTo>();
-	}
-
-	public void SetCityDistanceToArrayListSize()
-	{
-		for(int i = 0; i < numofcities; i++)
-		{
-			cities.add(new CityDistanceTo(name, 0, citygenes.indexOf(name)));
-		}
 	}
 	
 	public String getName()
@@ -38,39 +29,12 @@ public class City
 	
 	public void addCityDistanceTo(String city_name, int distance, int gene_to)
 	{
-		CityDistanceTo city = new CityDistanceTo(city_name, distance, gene_to);
-		//cities.add(city);
-		cities.set(citygenes.indexOf(city_name), city);
-	}
-	
-	public int getDistanceTo(String city_name)
-	{
-		/*Iterator<CityDistanceTo> city_iterator = cities.iterator();
-		while(city_iterator.hasNext())
-		{
-			CityDistanceTo temp_city = city_iterator.next();
-			if(city_name.equals(temp_city.getName()))
-			{
-				return temp_city.getDistance();
-			}
-		}*/
-		return cities.get(citygenes.indexOf(city_name)).getDistance();
-		//return 0;
+		distances[gene][gene_to] = distance;
 	}
 	
 	public int getDistanceTo(int gene_to)
 	{
-		/*Iterator<CityDistanceTo> city_iterator = cities.iterator();
-		while(city_iterator.hasNext())
-		{
-			CityDistanceTo temp_city = city_iterator.next();
-			if(gene_to == temp_city.getGene())
-			{
-				return temp_city.getDistance();
-			}
-		}
-		return 0;*/
-		return cities.get(gene_to).getDistance();
+		return distances[gene][gene_to];
 	}
 	
 }
