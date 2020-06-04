@@ -88,7 +88,7 @@ public class SalesmanDriver
 		ArrayList<SortedChromo> sorted_chromo = new ArrayList<SortedChromo>();
 		SalesmanFunct.sortPop(sorted_chromo, population);
 
-		//Take best 10 from sorted_chromo
+		//Take best 10 from sorted_chromo and move them to the next generation
 		ArrayList<SortedChromo> best_chromo = new ArrayList<SortedChromo>();
 		for (int i = 1; i <= 10; i++)
 		{
