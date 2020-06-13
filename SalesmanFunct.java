@@ -2,9 +2,6 @@ package salesman;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
-
-import salesman.City;
-
 import java.util.Random;
 import java.io.*;
 import java.util.Collections;
@@ -12,12 +9,13 @@ import java.util.Comparator;
 
 public class SalesmanFunct
 {
+	static Random ran = new Random();
     public static void addToPop(int num_pop, ArrayList<Integer> chromo, ArrayList<ArrayList<Integer>> population)
 	{
 		for(int i = 0; i < num_pop-12; i++)//12 chromos already in population from last generation
 		{
 			ArrayList<Integer> copy = new ArrayList<Integer>(chromo);
-			Collections.shuffle(copy);
+			Collections.shuffle(copy, new Random(System.nanoTime()));
 			copy.add(0,0);
 			copy.add(0);
 			population.add(copy);
@@ -142,11 +140,27 @@ public class SalesmanFunct
 		
 		return comb_crossover_chromo;*/
 
-		for(int i = 1; i <= comb_crossover_chromo.size()-2; i++)
+		/*for(int i = 1; i <= comb_crossover_chromo.size()-2; i++)
 		{
 			if(comb_crossover_chromo.indexOf(i) != comb_crossover_chromo.lastIndexOf(i))
 			{
 				comb_crossover_chromo.set(comb_crossover_chromo.indexOf(i),missing_genes.remove(0));
+			}
+		}*/
+
+		Collections.shuffle(missing_genes);
+		for(int i = 1; i <= comb_crossover_chromo.size()-2; i++)
+		{
+			if(comb_crossover_chromo.indexOf(i) != comb_crossover_chromo.lastIndexOf(i))
+			{
+				if(ran.nextInt(2) == 0)
+				{
+					comb_crossover_chromo.set(comb_crossover_chromo.indexOf(i),missing_genes.remove(0));
+				}
+				else
+				{
+					comb_crossover_chromo.set(comb_crossover_chromo.lastIndexOf(i),missing_genes.remove(0));
+				}
 			}
 		}
 
