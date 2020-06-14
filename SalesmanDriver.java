@@ -90,15 +90,11 @@ public class SalesmanDriver
 
 		//Selection
 		//Take best 10 from sorted_chromo and move them to the next generation
-		ArrayList<SortedChromo> best_chromo = new ArrayList<SortedChromo>();
-		for (int i = 1; i <= 10; i++)
+		ArrayList<ArrayList<Integer>> next_gen_chromos = new ArrayList<ArrayList<Integer>>();
+		for (int i = 0; i < 10; i++)
 		{
-			best_chromo.add(sorted_chromo.remove(sorted_chromo.size()-1));
+			next_gen_chromos.add(population.get(sorted_chromo.remove(sorted_chromo.size()-1).getChromoNum()));
 		}
-		
-
-
-
 
 		ArrayList<SortedChromo> ran_ten_chromo = new ArrayList<SortedChromo>();
 		ArrayList<SortedChromo> final_four_chromo = new ArrayList<SortedChromo>();
@@ -107,36 +103,21 @@ public class SalesmanDriver
 		ArrayList<Integer> crossover_chromo_two = new ArrayList<Integer>();
 		ArrayList<Integer> missing_genes_one = new ArrayList<Integer>();
 		ArrayList<Integer> missing_genes_two = new ArrayList<Integer>();
-		ArrayList<ArrayList<Integer>> next_gen_chromos = new ArrayList<ArrayList<Integer>>();
 		int crossover_point  = 0;
 		int cco_size = 0;
 		int cco_size2 = 0;
-		//Move Best 10 into next gen
-		for(SortedChromo test: best_chromo)
-		{
-			next_gen_chromos.add(population.get(test.getChromoNum()));
-		}
 
 		//fill rest of next gen
 		for(int j = 0; j < num_pop-10; j = j + 2) //NUM_POP MUST BE EVEN
 		{
 			//Shuffle remaining sorted_chromo and take 10
 			Collections.shuffle(sorted_chromo, new Random(System.nanoTime()));
-			//System.out.println(sorted_chromo.size());
 			ran_ten_chromo.clear();
 			for (int i = 0; i < 10; i++)
 			{
 				//ran_ten_chromo.add(sorted_chromo.remove(sorted_chromo.size()-1));
 				ran_ten_chromo.add(sorted_chromo.get(i));
 			}
-
-			/*
-			System.out.println("Ran ten");
-			for(SortedChromo chro : ran_ten_chromo)
-			{
-				System.out.println(chro.getChromoNum() + " " + chro.getDistance());
-			}
-			*/
 
 			//Sort those 10
 			Collections.sort(ran_ten_chromo, new Comparator<SortedChromo>()
@@ -156,14 +137,6 @@ public class SalesmanDriver
 				final_four_chromo.add(ran_ten_chromo.get(ran_ten_chromo.size()-(i+1)));
 			}
 
-			/*
-			System.out.println("Best 4");
-			for(SortedChromo chro : final_four_chromo)
-			{
-				System.out.println(chro.getChromoNum() + " " + chro.getDistance());
-			}
-			*/
-
 			//Shuffle final four and take two
 			Collections.shuffle(final_four_chromo, new Random(System.nanoTime()));
 			final_two_chromo.clear();
@@ -172,41 +145,14 @@ public class SalesmanDriver
 				final_two_chromo.add(final_four_chromo.get(i));
 			}
 
-			/*
-			System.out.println("Final 2");
-			for(SortedChromo chro : final_two_chromo)
-			{
-				System.out.println(chro.getChromoNum() + " " + chro.getDistance());
-			}
-			*/
-
-			/*
-			//Take next 2 best for crossover
-			ArrayList<SortedChromo> final_two_chromo = new ArrayList<SortedChromo>();
-			for (int i = 1; i <= 2; i++)
-			{
-				final_two_chromo.add(sorted_chromo.remove(sorted_chromo.size()-1));
-			}
-			*/
-
-			
 			//Crossover
-			/*Random r = new Random();
-			int crossover_point = r.nextInt((((chromo.size()+ 2) - 3)- 2) + 1) + 2;*/
 			crossover_point = (int)(Math.random() * ((chromo.size()-1) - 1 + 1) + 1);
 
-			//crossover_chromo_one.clear();
-			///crossover_chromo_two.clear();
 			crossover_chromo_one = population.get(final_two_chromo.get(0).getChromoNum());
 			crossover_chromo_two = population.get(final_two_chromo.get(1).getChromoNum());
 			ArrayList<Integer> crossover_chromo_one_copy = new ArrayList<Integer>(crossover_chromo_one);
 			ArrayList<Integer> crossover_chromo_two_copy = new ArrayList<Integer>(crossover_chromo_two);
 			
-			/*
-			System.out.println("crossover one " + crossover_chromo_one_copy);
-			System.out.println("Crossover two " + crossover_chromo_two_copy);
-			*/
-
 			//cut chromo one at point
 			cco_size = crossover_chromo_one_copy.size();
 			SalesmanFunct.cutChromo(crossover_chromo_one_copy,crossover_point,cco_size);
@@ -240,28 +186,9 @@ public class SalesmanDriver
 			//The chromos that go to the next generation		
 			next_gen_chromos.add(crossover_chromo_one_copy);
 			next_gen_chromos.add(crossover_chromo_two_copy);
-
-			/*
-			System.out.println("crossover one new " + crossover_chromo_one_copy);
-			System.out.println("Crossover two new" + crossover_chromo_two_copy);
-			System.out.println("\n");
-			*/
 		}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-		//start of second generation loop
+		//start of generation loop
 		for(int i = 1; i < num_gen; i++)
 		{
 			population.clear();
@@ -271,10 +198,6 @@ public class SalesmanDriver
 			{
 				population.add(next_gen);
 			}
-			/*
-			//randomize chromo and add them to the population
-			SalesmanFunct.addToPop(num_pop, chromo, population);
-			*/
 
 			//Fitness
 			//sort chromo
@@ -283,37 +206,13 @@ public class SalesmanDriver
 
 			//Selection
 			//Take best 10 from sorted_chromo
-			best_chromo.clear();
-		
-			for (int j = 1; j <= 10; j++)
-			{
-				best_chromo.add(sorted_chromo.remove(sorted_chromo.size()-1));
-			}
-
-			//Put best 10 into next gen
 			next_gen_chromos.clear();
-			for(SortedChromo test : best_chromo)
+			for (int j = 0; j < 10; j++)
 			{
-				//ArrayList<Integer> next_gen = population.get(test.getChromoNum());
-				next_gen_chromos.add(population.get(test.getChromoNum()));	
+				next_gen_chromos.add(population.get(sorted_chromo.remove(sorted_chromo.size()-1).getChromoNum()));
 			}
-				
-			/*if(i == num_gen - 1)
-			{
-				//display best route
-				System.out.println("\n");
-				System.out.println("\n");
-				System.out.println("\n");
-				SortedChromo final_chromo = best_chromo.get(0);
-				ArrayList<Integer> final_route = population.get(final_chromo.getChromoNum());
-				for(int route: final_route)
-				{
-					//System.out.println(route);
-					System.out.println(city_names.get(route) + " " + route);
-				}
-				System.out.println("with a distance of " + final_chromo.getDistance());
-				break;
-			}*/
+			
+			//fill in rest of next_gen
 			for(int t = 0; t < num_pop-10; t = t + 2)
 			{
 				//Shuffle remaining sorted_chromo and take 10
@@ -352,21 +251,9 @@ public class SalesmanDriver
 					final_two_chromo.add(final_four_chromo.get(j));
 				}
 
-				/*
-				//Take next two best for crossover
-				final_two_chromo.clear();
-				for (int j = 1; j <= 2; j++)
-				{
-					final_two_chromo.add(sorted_chromo.remove(sorted_chromo.size()-1));
-				}
-				*/
-
 				//Crossover
-				//crossover_point = r.nextInt((((chromo.size()+ 2) - 3)- 2) + 1) + 2;
 				crossover_point = (int)(Math.random() * ((chromo.size()-1) - 1 + 1) + 1);
 
-				//crossover_chromo_one.clear();
-				//crossover_chromo_two.clear();
 				crossover_chromo_one = population.get(final_two_chromo.get(0).getChromoNum());
 				crossover_chromo_two = population.get(final_two_chromo.get(1).getChromoNum());
 				ArrayList<Integer> corossover_chromo_one_copy_loop = new ArrayList<>(crossover_chromo_one);
@@ -404,6 +291,7 @@ public class SalesmanDriver
 				next_gen_chromos.add(corossover_chromo_one_copy_loop);
 				next_gen_chromos.add(corossover_chromo_two_copy_loop);
 			}
+			//Now on to next gen
 		}
 
 		//printing best route
@@ -446,5 +334,4 @@ public class SalesmanDriver
 		}
 		System.out.println("with a distance of " + final_chromo.getDistance());
     }
-
 }
