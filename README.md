@@ -5,4 +5,4 @@ Given a list of cities and distance between them this program can determine the 
 Ran in the cmd like this: java salesman.SalesmanDriver cities.txt distance.txt (num_gen here) (num_pop here)
 where num_gen means how many generations and num_pop means how many populations in each generation. A population is a single route.
 
-1000 is recommed for both numbers. Does not get a perfect answer but should be close
+1000 is recommed for both numbers. 7810 is the best distance and it should get it in one or two tries
